@@ -19,7 +19,8 @@ import {
   TouchableHighlight,
   Image,
   DeviceEventEmitter,
-  Share
+  Share,
+  ActivityIndicator
 } from 'react-native';
 
 export default class OneVerse extends Component {
@@ -48,42 +49,55 @@ export default class OneVerse extends Component {
   }
 
   render() {
-    console.log("render fun")
     // const { navigate } = this.props.navigation;
     return (
 
       <View style={styles.container}>
       <Image source={Images.background} ref='image' style={styles.background}>
         {this._header()}
-        <ScrollView ref='scrollView' collapsable={false} style={{flex: 1, marginTop: 20}}>
-
-          <View ref='v' collapsable={false} style={styles.verseContainer}>
-            <Text style={styles.arabicVerse}>{this.state.arabicVerse}</Text>
-
-            <View style={styles.separator} />
-
-            <Text style={styles.verseName}>{this.state.arabicVerseName}</Text>
-
-            <View style={styles.separator} />
-
-            <Text style={styles.ma3ani}>{this.state.ma3ani}</Text>
-          </View>
-
-          <View style={styles.verseContainer}>
-            <Text style={styles.englishVerse}>{this.state.englishVerse}</Text>
-
-            <View style={styles.separator} />
-
-            <Text style={styles.verseName}>{this.state.englishVerseName}</Text>
-
-          </View>
+        <ScrollView ref='scrollView' collapsable={false} style={{flex: 1, marginTop: 8}}>
+          {this._versesView()}
         </ScrollView>
-
         {this._actions()}
-
       </Image>
     </View>
     );
+  }
+
+  _versesView() {
+    if (this.state.isLoading) {
+      return <ActivityIndicator
+        animating={true}
+        style={[styles.activityIndicator]}
+        size="large"
+        color="white"
+      />
+    } else {
+      return (
+      <ScrollView ref='scrollView' collapsable={false} style={{flex: 1}}>
+        <View ref='v' collapsable={false} style={styles.verseContainer}>
+          <Text style={styles.arabicVerse}>{this.state.arabicVerse}</Text>
+
+          <View style={styles.separator} />
+
+          <Text style={styles.verseName}>{this.state.arabicVerseName}</Text>
+
+          <View style={styles.separator} />
+
+          <Text style={styles.ma3ani}>{this.state.ma3ani}</Text>
+        </View>
+
+        <View style={styles.verseContainer}>
+          <Text style={styles.englishVerse}>{this.state.englishVerse}</Text>
+
+          <View style={styles.separator} />
+
+          <Text style={styles.verseName}>{this.state.englishVerseName}</Text>
+
+        </View>
+      </ScrollView>
+      )
+    }
   }
 
   _header() {
@@ -94,14 +108,14 @@ export default class OneVerse extends Component {
           </TouchableHighlight>
         </View>
     } else {
-      return <View style={styles.header}>
-          
-        </View>
+      return
+       <View style={styles.header}>      
+      </View>
     }
   }
 
   _actions() {
-    if (!this.state.isSharing) {
+    if (!this.state.isSharing && !this.state.isLoading) {
       return <View style={styles.actionsContainer}>
           <TouchableHighlight title='Play' onPress={this.playVerse} style={styles.playButton}>
             <Text style={styles.buttonText}>{this.state.isPlaying ? "Stop" : "Play"}</Text>
@@ -123,7 +137,7 @@ export default class OneVerse extends Component {
 
   _today() {
     var today = new Date();
-    var dd = today.getDate() + 3;
+    var dd = today.getDate();
     var mm = today.getMonth()+1; //January is 0!
     var yyyy = today.getFullYear();
 
@@ -149,19 +163,23 @@ export default class OneVerse extends Component {
     })
     fetch(this._linkForToday())
       .then((response) => response.json())
-      .then((responseJson) => {
-        console.log("response json: " + responseJson.ar)
+      .then((json) => {
+        console.log("response json: " + json)
         this.setState({
-          arabicVerse: responseJson.ar,
-          englishVerse: responseJson.en,
-          ma3ani: responseJson.ma3ani,
-          arabicVerseName: responseJson.nameAr,
-          englishVerseName: responseJson.nameEn,
-          audioUrl: responseJson.audioUrl
+          arabicVerse: json.ar,
+          englishVerse: json.en,
+          ma3ani: json.ma3ani,
+          arabicVerseName: json.nameAr,
+          englishVerseName: json.nameEn,
+          audioUrl: json.audioUrl,
+          isLoading: false
         })
       })
       .catch((error) => {
         console.error(error);
+        this.setState({
+          isLoading: false
+        })
       });
   }
 
@@ -254,7 +272,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     resizeMode: 'cover',
-    width: 380
+    // width: 380
   },
   separator: {
     height: 1,
@@ -263,13 +281,13 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   verseContainer: {
-    margin: 20,
+    margin: 8,
     padding: 20,
     borderRadius: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   actionsContainer: {
-    margin: 20,
+    margin: 8,
     flexDirection: 'row',
     borderRadius: 8,
     height: 60,
@@ -326,6 +344,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 17,
+  },
+  activityIndicator: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 2,
+
+    height: 400,
   }
 });
 

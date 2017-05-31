@@ -37,7 +37,6 @@ export default class Home extends Component {
 
       isPlaying: false,
       isLoading: false,
-      isSharing: false,
     }
 
     this.playVerse = this.playVerse.bind(this);
@@ -98,21 +97,15 @@ export default class Home extends Component {
   }
 
   _header() {
-    if (!this.state.isSharing) {
       return <View style={styles.header}>
           <TouchableHighlight style={styles.shareButton} onPress={this.share}>
             <Text style={styles.buttonText}>Share</Text>
           </TouchableHighlight>
         </View>
-    } else {
-      return
-       <View style={styles.header}>      
-      </View>
-    }
   }
 
   _actions() {
-    if (!this.state.isSharing && !this.state.isLoading) {
+    if (!this.state.isLoading) {
       return <View style={styles.actionsContainer}>
           <TouchableHighlight title='Play' onPress={this.playVerse} style={styles.playButton}>
             <Text style={styles.buttonText}>{this.state.isPlaying ? "Stop" : "Play"}</Text>
@@ -223,12 +216,8 @@ export default class Home extends Component {
   }
 
   share() {
-
-    console.log('refs ' + this.refs)
-
-    this.setState({isSharing: true})
-    setTimeout(() => {
-      takeSnapshot(this.refs.image, {
+    
+    takeSnapshot(this.refs.image, {
       format: "jpeg",
       quality: 1
     })
@@ -236,17 +225,14 @@ export default class Home extends Component {
       uri => this.shareURL(uri),
       error => {
         console.error("Oops, snapshot failed", error)
-        this.setState({isSharing: false})
       }
     );
-    }, 300)
 
 
   //   let url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAQlBMVEUAAABEREQ9PT0/Pz8/Pz9AQEA7OzszMzM/Pz8/Pz9FRUU/Pz8/Pz9VVVUAAAA/Pz8+Pj4/Pz8/Pz9BQUFAQEA/Pz+e9yGtAAAAFnRSTlMAD5bv9KgaFJ/yGv+zAwGltPH9LyD5QNQoVwAAAF5JREFUSMft0EkKwCAQRFHHqEnUON3/qkmDuHMlZlVv95GCRsYAAAD+xYVU+hhprHPWjDy1koJPx+L63L5XiJQx9PQPpZiOEz3n0qs2ylZ7lkyZ9oyXzl76MAAAgD1eJM8FMZg0rF4AAAAASUVORK5CYII='
   }
 
   shareURL(url) {
-    this.setState({isSharing: false})
     Share.share({
       url: url
     })

@@ -118,9 +118,11 @@ export default class Home extends Component {
             <Text style={styles.buttonText}>{this.state.isPlaying ? "Stop" : "Play"}</Text>
           </TouchableHighlight>
 
+          {/*
           <TouchableHighlight title='Play' onPress={() => {}} style={styles.readItButton}>
             <Text style={styles.buttonText}>I read it</Text>
           </TouchableHighlight>
+          */}
         </View>
     } else {
       return <View />

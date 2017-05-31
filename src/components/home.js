@@ -14,8 +14,11 @@ import {
   Image,
   DeviceEventEmitter,
   Share,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from 'react-native';
+
+var deviceWidth = Dimensions.get('window').width;
 
 export default class Home extends Component {
 
@@ -254,7 +257,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // backgroundColor: 'yellow',
+    backgroundColor: 'yellow',
     flexDirection: 'column'
   },
   header: {
@@ -266,7 +269,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     resizeMode: 'cover',
-    // width: 380
+    width: deviceWidth
   },
   separator: {
     height: 1,

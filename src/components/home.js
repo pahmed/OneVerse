@@ -13,10 +13,10 @@ import {
   TouchableHighlight,
   Image,
   DeviceEventEmitter,
-  Share,
   ActivityIndicator,
   Dimensions
 } from 'react-native';
+import Share from 'react-native-share';
 
 var deviceWidth = Dimensions.get('window').width;
 
@@ -49,7 +49,7 @@ export default class Home extends Component {
     return (
 
       <View style={styles.container}>
-      <Image source={Images.background} ref='image' style={styles.background}>
+      <Image source={Images.background} ref='image' collapsable={false} style={styles.background}>
         {this._header()}
         <ScrollView ref='scrollView' collapsable={false} style={{flex: 1, marginTop: 8}}>
           {this._versesView()}
@@ -227,14 +227,12 @@ export default class Home extends Component {
         console.error("Oops, snapshot failed", error)
       }
     );
-
-
-  //   let url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAQlBMVEUAAABEREQ9PT0/Pz8/Pz9AQEA7OzszMzM/Pz8/Pz9FRUU/Pz8/Pz9VVVUAAAA/Pz8+Pj4/Pz8/Pz9BQUFAQEA/Pz+e9yGtAAAAFnRSTlMAD5bv9KgaFJ/yGv+zAwGltPH9LyD5QNQoVwAAAF5JREFUSMft0EkKwCAQRFHHqEnUON3/qkmDuHMlZlVv95GCRsYAAAD+xYVU+hhprHPWjDy1koJPx+L63L5XiJQx9PQPpZiOEz3n0qs2ylZ7lkyZ9oyXzl76MAAAgD1eJM8FMZg0rF4AAAAASUVORK5CYII='
   }
 
   shareURL(url) {
-    Share.share({
-      url: url
+    console.log("share url: ", url)
+    Share.open({
+      url: url,
     })
   }
 }
@@ -256,6 +254,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     resizeMode: 'cover',
     width: deviceWidth
   },

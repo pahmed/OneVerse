@@ -5,6 +5,8 @@
  */
 
 import React, { Component } from 'react';
+import Home from './src/components/home.js'
+
 import {
   AppRegistry,
 } from 'react-native';
